@@ -16,7 +16,7 @@ describe("app", () => {
   });
   describe("/*", () => {
     describe("/api", () => {
-      it("GET / status:200, returns a body with all endpoints.", () => {
+      it("GET / status:200, returns a body with all endpoints", () => {
         return request(app)
           .get("/api")
           .expect(200)
@@ -24,7 +24,7 @@ describe("app", () => {
             expect(body).to.be.an("object");
           });
       });
-      describe.only("/topics", () => {
+      describe("/topics", () => {
         it("GET  / status: 200, returns an array of topics objects", () => {
           return request(app)
           .get("/api/topics")
@@ -35,6 +35,18 @@ describe("app", () => {
             expect(body.topics[0]).to.have.keys("slug","description");
             
           })
+        });
+      });
+      describe("/users", () => {
+        describe("/:username", () => {
+          it("GET / status:200, returns an user by his username", () => {
+            return request(app)
+            .get("/api/users/:username")
+            .expect(200)
+            .then(({body}) => {
+              expect(body.user.username).to.be.an("object");
+            });
+          });
         });
       });
     });
