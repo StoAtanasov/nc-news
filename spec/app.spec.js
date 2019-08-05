@@ -68,8 +68,7 @@ describe("app", () => {
                   "votes",
                   "topic",
                   "author",
-                  "created_at",
-                  "comment_count"
+                  "created_at"                
                 );
               });
           });
