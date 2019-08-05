@@ -18,11 +18,11 @@ describe("app", () => {
     describe("/api", () => {
       it("GET / status:200, returns a body with all endpoints.", () => {
         return request(app)
-        .get("/api")
-        .status(200)
-        .then(({body}) => {
-          expect(body).to.be.an("object");
-        })
+          .get("/api")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).to.be.an("object");
+          });
       });
     });
   });
