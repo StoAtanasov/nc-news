@@ -45,6 +45,32 @@ describe("app", () => {
               .expect(200)
               .then(({ body }) => {
                 expect(body.user).to.be.an("object");
+                 expect(body.user).to.have.keys(
+                   "username",
+                   "avatar_url",
+                   "name"
+                 );
+              });
+          });
+        });
+      });
+      describe("/articles", () => {
+        describe("/:article_id", () => {
+          it("GET / status:200, returns the article by article id ", () => {
+            return request(app)
+              .get("/api/articles/1")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.article).to.have.keys(
+                  "article_id",
+                  "title",
+                  "body",
+                  "votes",
+                  "topic",
+                  "author",
+                  "created_at",
+                  "comment_count"
+                );
               });
           });
         });
