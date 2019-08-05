@@ -6,3 +6,14 @@ exports.selectArticleById = article_id => {
     .from("articles")
     .where("articles.article_id", article_id);
 };
+
+exports.selectUpdatedArticle = (article_id, inc_votes) => {
+  return connetion
+    .increment("votes", inc_votes)
+    .into("articles.*")
+    .from("articles")
+    .where("articles.article_id", article_id)
+    .returning("*");
+    
+    
+};

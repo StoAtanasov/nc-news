@@ -27,14 +27,13 @@ describe("app", () => {
       describe("/topics", () => {
         it("GET  / status: 200, returns an array of topics objects", () => {
           return request(app)
-          .get("/api/topics")
-          .expect(200)
-          .then(({body})=> {
-            expect(body.topics).to.be.an("array");
-            expect(body.topics[0]).to.be.an("object");
-            expect(body.topics[0]).to.have.keys("slug","description");
-            
-          })
+            .get("/api/topics")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.topics).to.be.an("array");
+              expect(body.topics[0]).to.be.an("object");
+              expect(body.topics[0]).to.have.keys("slug", "description");
+            });
         });
       });
       describe("/users", () => {
@@ -45,11 +44,11 @@ describe("app", () => {
               .expect(200)
               .then(({ body }) => {
                 expect(body.user).to.be.an("object");
-                 expect(body.user).to.have.keys(
-                   "username",
-                   "avatar_url",
-                   "name"
-                 );
+                expect(body.user).to.have.keys(
+                  "username",
+                  "avatar_url",
+                  "name"
+                );
               });
           });
         });
@@ -68,27 +67,27 @@ describe("app", () => {
                   "votes",
                   "topic",
                   "author",
-                  "created_at"                
+                  "created_at"
                 );
               });
           });
-          it('PATCH / status:200, returns an updated article', () => {
-          return request(app)
-            .patch('/api/articles/1')
-            .send({inc_votes: 1})
-            .expect(201)
-            .then(({body}) => {
-              expect(body.article).to.contain.keys(
-                'article_id',
-                'title',
-                'body',
-                'votes',
-                'topic',
-                'author',
-                'created_at'
-              );
-              expect(body.article.votes).to.equal(101);
-            });
+          it("PATCH / status:200, returns an updated article", () => {
+            return request(app)
+              .patch("/api/articles/1")
+              .send({ inc_votes: 1 })
+              .expect(201)
+              .then(({ body }) => {
+                expect(body.article[0]).to.contain.keys(
+                  "article_id",
+                  "title",
+                  "body",
+                  "votes",
+                  "topic",
+                  "author",
+                  "created_at"
+                );
+                expect(body.article[0].votes).to.equal(101);
+              });
           });
         });
       });
