@@ -20,13 +20,9 @@ exports.seed = function(connection, Promise) {
 
       return Promise.all([topicsInsertions, usersInsertions])
         .then(() => {
-          
+         
          
         })
-
-
-
-
       
     })
     .then(articleRows => {
