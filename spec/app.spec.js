@@ -24,6 +24,16 @@ describe("app", () => {
             expect(body).to.be.an("object");
           });
       });
+      describe("/topics", () => {
+        it("GET  / status: 200, returns an array of topics objects", () => {
+          return request(app)
+          .get("/api/topics")
+          .expect(200)
+          .then(({body})=> {
+            expect(body.topics).to.be.an("array");
+          })
+        });
+      });
     });
   });
 });
