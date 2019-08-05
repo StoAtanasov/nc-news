@@ -2,6 +2,8 @@ const { selectUser } = require("../models/users-model");
 
 exports.sendUserByUsername = (req, res, next) => {
   const { username } = req.params;
-  console.log(username);
-  selectUser(username);
+ 
+  selectUser(username)
+    .then(user => res.status(200).send({ user }))
+    .catch(next);
 };

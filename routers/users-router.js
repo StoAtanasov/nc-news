@@ -1,5 +1,5 @@
 const usersRouter = require("express").Router();
-const sendUserByUsername = require("../controllers/users-contorller");
+const {sendUserByUsername} = require("../controllers/users-contorller");
 
 usersRouter.route("/:username").get(sendUserByUsername);
 

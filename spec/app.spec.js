@@ -41,11 +41,11 @@ describe("app", () => {
         describe("/:username", () => {
           it("GET / status:200, returns an user by his username", () => {
             return request(app)
-            .get("/api/users/1")
-            .expect(200)
-            .then(({body}) => {
-              expect(body.user.username).to.be.an("object");
-            });
+              .get("/api/users/butter_bridge")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.user).to.be.an("object");
+              });
           });
         });
       });
