@@ -72,11 +72,11 @@ describe("app", () => {
                 );
               });
           });
-          it('PATCH status 200, returns an updated article', () => {
+          it('PATCH / status:200, returns an updated article', () => {
           return request(app)
-            .patch('/api/articles/2')
+            .patch('/api/articles/1')
             .send({inc_votes: 1})
-            .expect(200)
+            .expect(201)
             .then(({body}) => {
               expect(body.article).to.contain.keys(
                 'article_id',
@@ -87,7 +87,7 @@ describe("app", () => {
                 'author',
                 'created_at'
               );
-              expect(body.article.votes).to.equal(1);
+              expect(body.article.votes).to.equal(101);
             });
           });
         });
