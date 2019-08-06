@@ -74,6 +74,22 @@ describe("app", () => {
     });
     describe("/articles", () => {
       describe("/:article_id", () => {
+        it("GET / status:404, for non existing  article id", () => {
+          return request(app)
+            .get("/api/articles/1000")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Page not found");
+            });
+        });
+        it.only("GET / status:400, for invalid article", () => {
+          return request(app)
+            .get("/api/articles/not-a-number")
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Bad request");
+            });
+        });
         it("GET / status:200, returns the article by article id ", () => {
           return request(app)
             .get("/api/articles/1")
