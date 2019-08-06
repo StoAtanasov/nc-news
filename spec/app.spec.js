@@ -296,7 +296,7 @@ describe("app", () => {
                 );
               });
           });
-           it.only("GET / status: 200, returns all comments for given article_id, comments are sorted by ctreated_at and ordered by given order", () => {
+           it("GET / status: 200, returns all comments for given article_id, comments are sorted by created_at and ordered by given order", () => {
              return request(app)
                .get("/api/articles/1/comments?order=asc")
                .expect(200)
@@ -304,6 +304,17 @@ describe("app", () => {
                  expect(body.comments).to.be.sortedBy("created_at", {
                    descending: false
                  });
+               });
+           });
+           it.only("GET / status: 200, returns all comments for given article_id, comments are sorted by valid query and ordered by given order", () => {
+             return request(app)
+               .get("/api/articles/1/comments?sort_by=author&order=asc")
+               .expect(200)
+               .then(({ body }) => {
+                 expect(body.comments).to.be.sortedBy("author", {descending: false });
+                 expect(body.comments[0].author).to.equal(
+                   "butter_bridge"
+                 );
                });
            });
         });
