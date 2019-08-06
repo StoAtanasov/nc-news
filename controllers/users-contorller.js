@@ -5,5 +5,7 @@ exports.sendUserByUsername = (req, res, next) => {
  
   selectUser(username)
     .then(user => res.status(200).send({ user }))
-    .catch(next);
+    .catch(err => {
+      next(err);
+    });
 };

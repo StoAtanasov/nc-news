@@ -8,14 +8,23 @@ const connection = require("../db/connection");
 const app = require("../app");
 
 describe("app", () => {
-  after(() => {
-    return connection.destroy();
-  });
+
   beforeEach(() => {
     return connection.seed.run();
   });
+  after(() => {
+    return connection.destroy();
+  });
   describe("/*", () => {
     describe("/api", () => {
+      it("GET  / status:404 , response with message page not found, when passed wrong route", () => {
+        return request(app)
+          .get("/api/not-a-route")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).to.equal("Page not found");
+          });
+      });
       it("GET / status:200, returns a body with all endpoints", () => {
         return request(app)
           .get("/api")
@@ -51,6 +60,14 @@ describe("app", () => {
                 );
               });
           });
+          it("GET / status:404, for non existing  username", () => {
+            return request(app)
+              .get("/api/users/not-a-username")
+              .expect(404)
+              .then(({ body }) => {
+               expect(body.msg).to.equal("Username does not exists")
+              });
+          });
         });
       });
       describe("/articles", () => {
@@ -71,7 +88,7 @@ describe("app", () => {
                 );
               });
           });
-          it("PATCH / status:200, returns an updated article", () => {
+          it("PATCH / status:201, returns an updated article", () => {
             return request(app)
               .patch("/api/articles/1")
               .send({ inc_votes: 1 })
@@ -94,3 +111,4 @@ describe("app", () => {
     });
   });
 });
+

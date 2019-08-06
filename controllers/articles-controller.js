@@ -3,18 +3,16 @@ const {
   selectUpdatedArticle
 } = require("../models/articles-model");
 
-exports.sendArticleById = (req,res,next) => {
+exports.sendArticleById = (req, res, next) => {
   const { article_id } = req.params;
-  console.log(article_id);
-    selectArticleById(article_id)
-      .then(article => {
-        res.status(200).send({ article });
-      })
-      .catch(next);
+  selectArticleById(article_id)
+    .then(article => {
+      res.status(200).send({ article });
+    })
+    .catch(next);
+};
 
-}
-
-exports.updateArticle = (req,res,next) => {
+exports.updateArticle = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
   selectUpdatedArticle(article_id, inc_votes)
@@ -22,4 +20,4 @@ exports.updateArticle = (req,res,next) => {
       res.status(201).send({ article });
     })
     .catch(next);
-}
+};
