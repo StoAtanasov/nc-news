@@ -17,10 +17,15 @@ exports.createCommentByArticle = (article_id, username, comment) => {
     });
   };
 
-  exports.selectAllComments = article_id => {
-    
+  exports.selectAllComments = (
+    article_id,
+    sort_by = "created_at",
+    order = "desc"
+  ) => {
+    console.log(order);
     return connection
       .select("comments.*")
       .from("comments")
+      .orderBy(sort_by, order)
       .where("comments.article_id", article_id);
-  }
+  };

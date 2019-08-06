@@ -259,35 +259,53 @@ describe("app", () => {
               .then(({ body }) => {
                 expect(body.msg).to.equal("Bad request");
               });
-          }); 
-          it.only("GET / status: 200, returns all comments for given article_id", () => {
-                return request(app)
-                  .get("/api/articles/1/comments")
-                  .expect(200)
-                  .then(({ body }) => {
-                   expect(body.comments).to.be.an("array");
-                    expect(body.comments[1]).to.have.keys(
-                      `comment_id`,
-                      `created_at`,
-                      `author`,
-                      `body`,
-                      `votes`,
-                      `article_id`
-                    );
-                    expect(body.comments[1].article_id).to.equal(1)
-                  });
+          });
+          it("GET / status: 200, returns all comments for given article_id", () => {
+            return request(app)
+              .get("/api/articles/1/comments")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).to.be.an("array");
+                expect(body.comments[1]).to.have.keys(
+                  `comment_id`,
+                  `created_at`,
+                  `author`,
+                  `body`,
+                  `votes`,
+                  `article_id`
+                );
+                expect(body.comments[1].article_id).to.equal(1);
               });
-          xit("GET / status: 200, displays all comments for specified article and comments are sorted by created_at (SORTED DESC BY DEFAULT)", () => {
+          });
+          it("GET / status: 200, returns all comments for given article_id, comments are sorted in descending ctreated_at order by default", () => {
+            return request(app)
+              .get("/api/articles/1/comments")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).to.be.sortedBy("created_at", { descending : true});
+              });
+          });
+          it("GET / status: 200, returns all comments for given article_id, comments are sorted by author ", () => {
             return request(app)
               .get("/api/articles/1/comments?sort_by=author")
               .expect(200)
               .then(({ body }) => {
+                expect(body.comments).to.be.sortedBy("author", {descending: true});
                 expect(body.comments[0].author).to.equal(
                   "icellusedkars"
                 );
               });
           });
-
+           it.only("GET / status: 200, returns all comments for given article_id, comments are sorted by ctreated_at and ordered by given order", () => {
+             return request(app)
+               .get("/api/articles/1/comments?order=asc")
+               .expect(200)
+               .then(({ body }) => {
+                 expect(body.comments).to.be.sortedBy("created_at", {
+                   descending: false
+                 });
+               });
+           });
         });
       });
     });
