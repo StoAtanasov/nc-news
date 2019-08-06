@@ -265,7 +265,7 @@ describe("app", () => {
                   .get("/api/articles/1/comments")
                   .expect(200)
                   .then(({ body }) => {
-                    expect(body.comments).to.be.an("array");
+                   expect(body.comments).to.be.an("array");
                     expect(body.comments[1]).to.have.keys(
                       `comment_id`,
                       `created_at`,
@@ -274,6 +274,7 @@ describe("app", () => {
                       `votes`,
                       `article_id`
                     );
+                    expect(body.comments[1].article_id).to.equal(1)
                   });
               });
           xit("GET / status: 200, displays all comments for specified article and comments are sorted by created_at (SORTED DESC BY DEFAULT)", () => {
