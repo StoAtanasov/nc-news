@@ -162,7 +162,7 @@ describe("app", () => {
               expect(body.article[0].votes).to.equal(60);
             });
         });
-        it("POST / status:201, returns an object with username and the new comment", () => {
+        it("POST / status:201, returns an object with the username and his new comment", () => {
           return request(app)
             .post("/api/articles/1/comments")
             .send({
