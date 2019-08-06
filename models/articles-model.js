@@ -17,8 +17,8 @@ exports.selectArticleById = article_id => {
 
 };
 
-exports.selectUpdatedArticle = (article_id, inc_votes) => {
-  
+exports.selectUpdatedArticle = (article_id, inc_votes = 0) => {
+  // empty inc votes create test
   return connection
     .increment("votes", inc_votes)
     .into("articles.*")
@@ -26,6 +26,7 @@ exports.selectUpdatedArticle = (article_id, inc_votes) => {
     .where("articles.article_id", article_id)
     .returning("*")
     .then(article => {
+      // destructure array
       if (!article || !article.length) {
         return Promise.reject({ status: 404, msg: "Article not found" });
       } else return article;
