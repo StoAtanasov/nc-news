@@ -7,7 +7,7 @@ app.use(express.json());
 app.use("/api", apiRouter);
 
 app.use((err,req,res,next) => {
-  //console.log(err, "<<<<< ERROR APP")
+  console.log(err, "<<<<< ERROR APP")
 
  if(err.code === "22P02"){
    res.status(400).send({ msg: "Bad request" });;

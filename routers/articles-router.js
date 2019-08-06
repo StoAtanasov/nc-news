@@ -4,11 +4,11 @@ const {
   updateArticle
 } = require("../controllers/articles-controller");
 
-const {sendNewComment} = require("../controllers/comments-controller")
+const { sendNewArticleComment } = require("../controllers/comments-controller");
 articlesRouter
   .route("/:article_id")
   .get(sendArticleById)
   .patch(updateArticle);
 
-articlesRouter.route("/articles/:article_id/comment").post(sendNewComment);
+articlesRouter.route("/:article_id/comments").post(sendNewArticleComment);
 module.exports = articlesRouter;
