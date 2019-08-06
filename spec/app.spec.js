@@ -63,6 +63,7 @@ describe("app", () => {
             });
         });
         it("GET / status:404, for non existing  username", () => {
+        
           return request(app)
             .get("/api/users/not-a-username")
             .expect(404)
@@ -82,7 +83,7 @@ describe("app", () => {
               expect(body.msg).to.equal("Page not found");
             });
         });
-        it.only("GET / status:400, for invalid article", () => {
+        it("GET / status:400, for invalid article", () => {
           return request(app)
             .get("/api/articles/not-a-number")
             .expect(400)
@@ -96,13 +97,14 @@ describe("app", () => {
             .expect(200)
             .then(({ body }) => {
               expect(body.article).to.have.keys(
-                "article_id",
-                "title",
-                "body",
-                "votes",
-                "topic",
-                "author",
-                "created_at"
+                `author`,
+                `title`,
+                `article_id`,
+                `body`,
+                `topic`,
+                `created_at`,
+                `votes`,
+                `comment_count`
               );
             });
         });
@@ -122,6 +124,69 @@ describe("app", () => {
                 "created_at"
               );
               expect(body.article[0].votes).to.equal(101);
+            });
+        });
+        it("PATCH / status:400, when an invalid articile id is passed ", () => {
+          return request(app)
+            .patch("/api/articles/not")
+            .send({ inc_votes: 1 })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Bad request");
+            });
+        });
+        it("PATCH / status:404, patching article with valid id  that does not exists ", () => {
+          return request(app)
+            .patch("/api/articles/100000")
+            .send({ inc_votes: 1 })
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Article not found");
+            });
+        });
+        it("PATCH / returns status:400, when the value of the vote is an invalid format ", () => {
+          return request(app)
+            .patch("/api/articles/1")
+            .send({ inc_votes: "not-a-number" })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Bad request");
+            });
+        });
+        it("PATCH / status: 201, ignores any extra item passed in the body", () => {
+          return request(app)
+            .patch("/api/articles/1")
+            .send({ inc_votes: -40, pet: "cat" })
+            .expect(201)
+            .then(({body}) => {
+              expect(body.article[0].votes).to.equal(60);
+            });
+        });
+        it("POST / status:201, returns an object with username and the new comment", () => {
+          return request(app)
+            .post("/api/articles/1/comments")
+            .send({
+              username: "butter_bridge",
+              body: "---> This is a new comment <---"
+            })
+            .expect(201)
+            .then(({ body }) => {
+              expect(body.comment).to.be.an("object");
+              expect(body.comment).to.have.keys(
+                `comment_id`,
+                `author`,
+                `article_id`,
+                `votes`,
+                `created_at`,
+                `body`
+              );
+              expect(body.comment.comment_id).to.equal(19);
+              expect(body.comment.author).to.equal("butter_bridge");
+              expect(body.comment.article_id).to.equal(1);
+              expect(body.comment.votes).to.equal(0);
+              expect(body.comment.body).to.equal(
+                "---> This is a new comment <---"
+              );
             });
         });
       });
