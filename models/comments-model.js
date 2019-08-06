@@ -10,11 +10,10 @@ exports.createCommentByArticle = (article_id, username, comment) => {
     })
     .into("comments")
     .returning("*")
-    .then(([comment]) => comment)
     .then(comment => {
       if (!comment || !comment.length) {
         return Promise.reject({ status: 400, msg: "Bad request" });
-      } else return comment;
+      } else return comment[0];
     });
   
 

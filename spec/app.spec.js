@@ -60,13 +60,10 @@ describe("app", () => {
             .then(({ body }) => {
               expect(body.user).to.be.an("object");
               expect(body.user).to.have.keys("username", "avatar_url", "name");
-              expect(body.user.username).to.equal(
-                "butter_bridge"
-              );
+              expect(body.user.username).to.equal("butter_bridge");
             });
         });
         it("GET / status:404, for non existing  username", () => {
-        
           return request(app)
             .get("/api/users/not-a-username")
             .expect(404)
@@ -109,7 +106,7 @@ describe("app", () => {
                 `votes`,
                 `comment_count`
               );
-              expect(body.article.article_id).to.equal(1)
+              expect(body.article.article_id).to.equal(1);
             });
         });
         it("PATCH / status:201, returns an updated article", () => {
@@ -133,26 +130,24 @@ describe("app", () => {
               })
           );
         });
-         it("PATCH / status:201, returns the same article when an empty object is passed", () => {
-           return (
-             request(app)
-               .patch("/api/articles/1")
-               .send({  })
-               .expect(201)
-               .then(({ body }) => {
-                 expect(body.article[0]).to.contain.keys(
-                   "article_id",
-                   "title",
-                   "body",
-                   "votes",
-                   "topic",
-                   "author",
-                   "created_at"
-                 );
-                 expect(body.article[0].votes).to.equal(100);
-               })
-           );
-         });
+        it("PATCH / status:201, returns the same article when an empty object is passed", () => {
+          return request(app)
+            .patch("/api/articles/1")
+            .send({})
+            .expect(201)
+            .then(({ body }) => {
+              expect(body.article[0]).to.contain.keys(
+                "article_id",
+                "title",
+                "body",
+                "votes",
+                "topic",
+                "author",
+                "created_at"
+              );
+              expect(body.article[0].votes).to.equal(100);
+            });
+        });
         it("PATCH / status:400, when an invalid articile id is passed ", () => {
           return request(app)
             .patch("/api/articles/not-an-article")
@@ -185,84 +180,113 @@ describe("app", () => {
             .patch("/api/articles/1")
             .send({ inc_votes: -40, pet: "cat" })
             .expect(201)
-            .then(({body}) => {
+            .then(({ body }) => {
               expect(body.article[0].votes).to.equal(60);
             });
         });
-        it("POST / status:201, returns an object with the username and the new comment", () => {
-          return request(app)
-            .post("/api/articles/1/comments")
-            .send({
-              username: "butter_bridge",
-              body: "---> This is a new comment <---"
-            })
-            .expect(201)
-            .then(({ body }) => {
-              expect(body.comment).to.be.an("object");
-              expect(body.comment).to.have.keys(
-                `comment_id`,
-                `author`,
-                `article_id`,
-                `votes`,
-                `created_at`,
-                `body`
-              );
-              expect(body.comment.comment_id).to.equal(19);
-              expect(body.comment.author).to.equal("butter_bridge");
-              expect(body.comment.article_id).to.equal(1);
-              expect(body.comment.votes).to.equal(0);
-              expect(body.comment.body).to.equal(
-                "---> This is a new comment <---"
-              );
-            });
-        });
-        it("POST / status:400, returns when an invalid articile id is passed  ", () => {
-          return request(app)
-            .post("/api/articles/not-an-article/comments")
-            .send({
-              username: "butter_bridge",
-              body: "---> This is a new comment <---"
-            })
-            .expect(400)
-            .then(({ body }) => {
-              expect(body.msg).to.equal("Bad request");
-            });
-        });
-        it("POST / status:404, returns when an valid article id  that does not exists is passed ", () => {
-          return request(app)
-            .post("/api/articles/10000/comments")
-            .send({
-              username: "butter_bridge",
-              body: "---> This is a new comment <---"
-            })
-            .expect(404)
-            .then(({ body }) => {
-              expect(body.msg).to.equal("Bad request");
-            });
-        });
-        it("POST / status:404, returns when passed invalid username but with comment to post", () => {
-          return request(app)
-            .post("/api/articles/1/comments")
-            .send({
-              username: "invalid username",
-              body: "---> This is a new comment <---"
-            })
-            .expect(404)
-            .then(({ body }) => {
-              expect(body.msg).to.equal("Bad request");
-            });
-        });        
-        it.only("POST / status: 404, returns an error if a non-existent article_id is used", () => {
-          return request(app)
-            .post("/api/articles/100000/comments")
-            .send({
-              username: "butter_bridge",
-              body: "---> This is a new comment <---"
-            })
-            .expect(404)
-            .then(({ body }) => {
-              expect(body.msg).to.equal("Bad request");
-            });
+        describe("/comments", () => {
+          it("POST / status:201, returns an object with the username and the new comment", () => {
+            return request(app)
+              .post("/api/articles/1/comments")
+              .send({
+                username: "butter_bridge",
+                body: "---> This is a new comment <---"
+              })
+              .expect(201)
+              .then(({ body }) => {
+                expect(body.comment).to.be.an("object");
+                expect(body.comment).to.have.keys(
+                  `comment_id`,
+                  `author`,
+                  `article_id`,
+                  `votes`,
+                  `created_at`,
+                  `body`
+                );
+                expect(body.comment.comment_id).to.equal(19);
+                expect(body.comment.author).to.equal("butter_bridge");
+                expect(body.comment.article_id).to.equal(1);
+                expect(body.comment.votes).to.equal(0);
+                expect(body.comment.body).to.equal(
+                  "---> This is a new comment <---"
+                );
+              });
+          });
+          it("POST / status:400, returns when an invalid articile id is passed  ", () => {
+            return request(app)
+              .post("/api/articles/not-an-article/comments")
+              .send({
+                username: "butter_bridge",
+                body: "---> This is a new comment <---"
+              })
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.msg).to.equal("Bad request");
+              });
+          });
+          it("POST / status:404, returns when an valid article id  that does not exists is passed ", () => {
+            return request(app)
+              .post("/api/articles/10000/comments")
+              .send({
+                username: "butter_bridge",
+                body: "---> This is a new comment <---"
+              })
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.msg).to.equal("Bad request");
+              });
+          });
+          it("POST / status:404, returns when passed invalid username but with comment to post", () => {
+            return request(app)
+              .post("/api/articles/1/comments")
+              .send({
+                username: "invalid username",
+                body: "---> This is a new comment <---"
+              })
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.msg).to.equal("Bad request");
+              });
+          });
+          it("POST / status: 404, returns an error if a non-existent article_id is used", () => {
+            return request(app)
+              .post("/api/articles/100000/comments")
+              .send({
+                username: "butter_bridge",
+                body: "---> This is a new comment <---"
+              })
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.msg).to.equal("Bad request");
+              });
+          }); 
+          it.only("GET / status: 200, returns all comments for given article_id", () => {
+                return request(app)
+                  .get("/api/articles/1/comments")
+                  .expect(200)
+                  .then(({ body }) => {
+                    expect(body.comments).to.be.an("array");
+                    expect(body.comments[1]).to.have.keys(
+                      `comment_id`,
+                      `created_at`,
+                      `author`,
+                      `body`,
+                      `votes`,
+                      `article_id`
+                    );
+                  });
+              });
+          xit("GET / status: 200, displays all comments for specified article and comments are sorted by created_at (SORTED DESC BY DEFAULT)", () => {
+            return request(app)
+              .get("/api/articles/1/comments?sort_by=author")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments[0].author).to.equal(
+                  "icellusedkars"
+                );
+              });
+          });
+
         });
       });
     });
