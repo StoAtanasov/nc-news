@@ -1,3 +1,4 @@
+const {createCommentByArticle} = require("../models/comments-model")
 exports.sendNewArticleComment = (req, res, next) => {
   const { article_id } = req.params;
   const {username, body} = req.body;
