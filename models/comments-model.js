@@ -15,17 +15,37 @@ exports.createCommentByArticle = (article_id, username, comment) => {
         return Promise.reject({ status: 400, msg: "Bad request" });
       } else return comment[0];
     });
-  };
+};
 
-  exports.selectAllComments = (
-    article_id,
-    sort_by = "created_at",
-    order = "desc"
-  ) => {
-    console.log(order);
+exports.selectAllComments = (
+  article_id,
+  sort_by = "created_at",
+  order = "desc"
+) => {
+
+  const permittedColunms = [
+    "comment_id",
+    "author",
+    "article_id",
+    "votes",
+    "created_at",
+    "body"
+  ];
+  
+  const permittedOrders = ["asc","desc"];
+
+  if (!permittedColunms.includes(sort_by) || !permittedOrders.includes(order)){
+    sort_by = "created_at";
+    order = "desc";
+  }
     return connection
       .select("comments.*")
       .from("comments")
       .orderBy(sort_by, order)
-      .where("comments.article_id", article_id);
-  };
+      .where("comments.article_id", article_id)
+      .then(comments => {
+        if (!comments || !comments.length) {
+          return Promise.reject({ status: 404, msg: "Not found" });
+        } else return comments;
+      });
+};

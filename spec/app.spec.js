@@ -15,7 +15,7 @@ describe("app", () => {
     return connection.destroy();
   });
   describe("/api", () => {
-    it("GET  / status:404 , response with message page not found, when passed wrong route", () => {
+    it("GET  / status: 404 , response with message page not found, when passed wrong route", () => {
       return request(app)
         .get("/not-a-route")
         .expect(404)
@@ -23,7 +23,7 @@ describe("app", () => {
           expect(body.msg).to.equal("Page not found");
         });
     });
-    it("GET  / status:404 , response with message page not found, when passed wrong route", () => {
+    it("GET  / status: 404 , response with message page not found, when passed wrong route", () => {
       return request(app)
         .get("/api/not-a-route")
         .expect(404)
@@ -31,7 +31,7 @@ describe("app", () => {
           expect(body.msg).to.equal("Page not found");
         });
     });
-    it("GET / status:200, returns a body with all endpoints", () => {
+    it("GET / status: 200, returns a body with all endpoints", () => {
       return request(app)
         .get("/api")
         .expect(200)
@@ -53,7 +53,7 @@ describe("app", () => {
     });
     describe("/users", () => {
       describe("/:username", () => {
-        it("GET / status:200, returns an user by his username", () => {
+        it("GET / status: 200, returns an user by his username", () => {
           return request(app)
             .get("/api/users/butter_bridge")
             .expect(200)
@@ -63,7 +63,7 @@ describe("app", () => {
               expect(body.user.username).to.equal("butter_bridge");
             });
         });
-        it("GET / status:404, for non existing  username", () => {
+        it("GET / status: 404, for non existing  username", () => {
           return request(app)
             .get("/api/users/not-a-username")
             .expect(404)
@@ -74,8 +74,26 @@ describe("app", () => {
       });
     });
     describe("/articles", () => {
+      it("GET / status: 200, returns all article", () => {
+        return request(app)
+          .get("/api/articles")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article).to.have.keys(
+              `author`,
+              `title`,
+              `article_id`,
+              `body`,
+              `topic`,
+              `created_at`,
+              `votes`,
+              `comment_count`
+            );
+            expect(body.article.article_id).to.equal(1);
+          });
+      });
       describe("/:article_id", () => {
-        it("GET / status:404, for non existing  article id", () => {
+        it("GET / status: 404, for non existing  article id", () => {
           return request(app)
             .get("/api/articles/1000")
             .expect(404)
@@ -83,7 +101,7 @@ describe("app", () => {
               expect(body.msg).to.equal("Page not found");
             });
         });
-        it("GET / status:400, for invalid article", () => {
+        it("GET / status: 400, for invalid article", () => {
           return request(app)
             .get("/api/articles/not-a-number")
             .expect(400)
@@ -91,7 +109,7 @@ describe("app", () => {
               expect(body.msg).to.equal("Bad request");
             });
         });
-        it("GET / status:200, returns the article by article id ", () => {
+        it("GET / status: 200, returns the article by article id ", () => {
           return request(app)
             .get("/api/articles/1")
             .expect(200)
@@ -109,7 +127,7 @@ describe("app", () => {
               expect(body.article.article_id).to.equal(1);
             });
         });
-        it("PATCH / status:201, returns an updated article", () => {
+        it("PATCH / status: 201, returns an updated article", () => {
           return (
             request(app)
               // create a test for .send({ }) return the same id witn nothing changed in it
@@ -130,7 +148,7 @@ describe("app", () => {
               })
           );
         });
-        it("PATCH / status:201, returns the same article when an empty object is passed", () => {
+        it("PATCH / status: 201, returns the same article when an empty object is passed", () => {
           return request(app)
             .patch("/api/articles/1")
             .send({})
@@ -148,7 +166,7 @@ describe("app", () => {
               expect(body.article[0].votes).to.equal(100);
             });
         });
-        it("PATCH / status:400, when an invalid articile id is passed ", () => {
+        it("PATCH / status: 400, when an invalid articile id is passed ", () => {
           return request(app)
             .patch("/api/articles/not-an-article")
             .send({ inc_votes: 1 })
@@ -157,7 +175,7 @@ describe("app", () => {
               expect(body.msg).to.equal("Bad request");
             });
         });
-        it("PATCH / status:404, patching article with valid id  that does not exists ", () => {
+        it("PATCH / status: 404, patching article with valid id  that does not exists ", () => {
           return request(app)
             .patch("/api/articles/100000")
             .send({ inc_votes: 1 })
@@ -166,7 +184,7 @@ describe("app", () => {
               expect(body.msg).to.equal("Article not found");
             });
         });
-        it("PATCH / returns status:400, when the value of the vote is an invalid format ", () => {
+        it("PATCH / status: 400, when the value of the vote is an invalid format ", () => {
           return request(app)
             .patch("/api/articles/1")
             .send({ inc_votes: "not-a-number" })
@@ -185,7 +203,7 @@ describe("app", () => {
             });
         });
         describe("/comments", () => {
-          it("POST / status:201, returns an object with the username and the new comment", () => {
+          it("POST / status: 201, returns an object with the username and the new comment", () => {
             return request(app)
               .post("/api/articles/1/comments")
               .send({
@@ -212,7 +230,7 @@ describe("app", () => {
                 );
               });
           });
-          it("POST / status:400, returns when an invalid articile id is passed  ", () => {
+          it("POST / status: 400, returns when an invalid articile id is passed  ", () => {
             return request(app)
               .post("/api/articles/not-an-article/comments")
               .send({
@@ -224,40 +242,40 @@ describe("app", () => {
                 expect(body.msg).to.equal("Bad request");
               });
           });
-          it("POST / status:404, returns when an valid article id  that does not exists is passed ", () => {
+          it("POST / status: 422, returns when an valid article id  that does not exists is passed ", () => {
             return request(app)
               .post("/api/articles/10000/comments")
               .send({
                 username: "butter_bridge",
                 body: "---> This is a new comment <---"
               })
-              .expect(404)
+              .expect(422)
               .then(({ body }) => {
-                expect(body.msg).to.equal("Bad request");
+                expect(body.msg).to.equal("Unproc­essable Entity");
               });
           });
-          it("POST / status:404, returns when passed invalid username but with comment to post", () => {
+          it("POST / status: 422, returns when passed invalid username but with comment to post", () => {
             return request(app)
               .post("/api/articles/1/comments")
               .send({
                 username: "invalid username",
                 body: "---> This is a new comment <---"
               })
-              .expect(404)
+              .expect(422)
               .then(({ body }) => {
-                expect(body.msg).to.equal("Bad request");
+                expect(body.msg).to.equal("Unproc­essable Entity");
               });
           });
-          it("POST / status: 404, returns an error if a non-existent article_id is used", () => {
+          it("POST / status: 422, returns an error if a non-existent article_id is used", () => {
             return request(app)
               .post("/api/articles/100000/comments")
               .send({
                 username: "butter_bridge",
                 body: "---> This is a new comment <---"
               })
-              .expect(404)
+              .expect(422)
               .then(({ body }) => {
-                expect(body.msg).to.equal("Bad request");
+                expect(body.msg).to.equal("Unproc­essable Entity");
               });
           });
           it("GET / status: 200, returns all comments for given article_id", () => {
@@ -282,7 +300,9 @@ describe("app", () => {
               .get("/api/articles/1/comments")
               .expect(200)
               .then(({ body }) => {
-                expect(body.comments).to.be.sortedBy("created_at", { descending : true});
+                expect(body.comments).to.be.sortedBy("created_at", {
+                  descending: true
+                });
               });
           });
           it("GET / status: 200, returns all comments for given article_id, comments are sorted by author ", () => {
@@ -290,33 +310,81 @@ describe("app", () => {
               .get("/api/articles/1/comments?sort_by=author")
               .expect(200)
               .then(({ body }) => {
-                expect(body.comments).to.be.sortedBy("author", {descending: true});
-                expect(body.comments[0].author).to.equal(
-                  "icellusedkars"
-                );
+                expect(body.comments).to.be.sortedBy("author", {
+                  descending: true
+                });
+                expect(body.comments[0].author).to.equal("icellusedkars");
               });
           });
-           it("GET / status: 200, returns all comments for given article_id, comments are sorted by created_at and ordered by given order", () => {
-             return request(app)
-               .get("/api/articles/1/comments?order=asc")
-               .expect(200)
-               .then(({ body }) => {
-                 expect(body.comments).to.be.sortedBy("created_at", {
-                   descending: false
-                 });
-               });
-           });
-           it.only("GET / status: 200, returns all comments for given article_id, comments are sorted by valid query and ordered by given order", () => {
-             return request(app)
-               .get("/api/articles/1/comments?sort_by=author&order=asc")
-               .expect(200)
-               .then(({ body }) => {
-                 expect(body.comments).to.be.sortedBy("author", {descending: false });
-                 expect(body.comments[0].author).to.equal(
-                   "butter_bridge"
-                 );
-               });
-           });
+          it("GET / status: 200, returns all comments for given article_id, comments are sorted by created_at and ordered by given order", () => {
+            return request(app)
+              .get("/api/articles/1/comments?order=asc")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).to.be.sortedBy("created_at", {
+                  descending: false
+                });
+              });
+          });
+          it("GET / status: 200, returns all comments for given article_id, comments are sorted by valid query and ordered by given order", () => {
+            return request(app)
+              .get("/api/articles/1/comments?sort_by=author&order=asc")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).to.be.sortedBy("author", {
+                  descending: false
+                });
+                expect(body.comments[0].author).to.equal("butter_bridge");
+              });
+          });
+          it("GET / status: 400, returns when an invalid articile id used and valid query passed passed  ", () => {
+            return request(app)
+              .get(
+                "/api/articles/not-an-article/comments?sort_by=author&order=asc"
+              )
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.msg).to.equal("Bad request");
+              });
+          });
+          it("GET / status: 404, returns an error if a non-existent article_id is used and valid query passed", () => {
+            return request(app)
+              .get("/api/articles/100000/comments?sort_by=author&order=asc")
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.msg).to.equal("Not found");
+              });
+          });
+          it("GET / status:200 ignore errneous sort_by quaries passed", () => {
+            return request(app)
+              .get("/api/articles/1/comments?sort_by=wrong_query")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).to.be.sortedBy("created_at", {
+                  descending: true
+                });
+              });
+          });
+          it("GET / status:200 ignore errneous order quaries passed", () => {
+            return request(app)
+              .get("/api/articles/1/comments?order=wrong_query")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).to.be.sortedBy("created_at", {
+                  descending: true
+                });
+              });
+          });
+          it("GET / status:200 ignore errneous sort_by and order quaries passed", () => {
+            return request(app)
+              .get("/api/articles/1/comments?order=wrong_query")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).to.be.sortedBy("created_at", {
+                  descending: true
+                });
+              });
+          });
         });
       });
     });
