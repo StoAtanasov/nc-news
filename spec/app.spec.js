@@ -71,7 +71,6 @@ describe("app", () => {
               expect(body.msg).to.equal("Username does not exists");
             });
         });
-        
       });
     });
     describe("/articles", () => {
@@ -86,7 +85,7 @@ describe("app", () => {
               `author`,
               `title`,
               `article_id`,
-               `topic`,
+              `topic`,
               `created_at`,
               `votes`,
               `comment_count`
@@ -151,9 +150,19 @@ describe("app", () => {
             });
           });
       });
-      it.only("GET / status:200, ignore erroneous order queries", () => {
+      it("GET / status:200, ignore erroneous order queries", () => {
         return request(app)
           .get("/api/articles?order=invalid-order")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.be.sortedBy("created_at", {
+              descending: true
+            });
+          });
+      });
+      it.only("GET / status:200, ignore erroneous sorted_by and order queries", () => {
+        return request(app)
+          .get("/api/articles?sort_by=invalid-query&order=invalid-order")
           .expect(200)
           .then(({ body }) => {
             expect(body.articles).to.be.sortedBy("created_at", {
@@ -418,9 +427,7 @@ describe("app", () => {
           });
           it("GET / status: 404, returns an error if a non-existent article_id is used and valid query passed", () => {
             return request(app)
-              .get(
-                "/api/articles/100000/comments?sort_by=author&order=asc"
-              )
+              .get("/api/articles/100000/comments?sort_by=author&order=asc")
               .expect(404)
               .then(({ body }) => {
                 expect(body.msg).to.equal("Page not found");
@@ -456,11 +463,11 @@ describe("app", () => {
                 });
               });
           });
-        it("GET / status:200 , returns an empty array when an article without any comments passed", () => {
+          it("GET / status:200 , returns an empty array when an article without any comments passed", () => {
             return request(app)
               .get("/api/articles/11/comments")
               .expect(200)
-              .then(({ body }) => {   
+              .then(({ body }) => {
                 expect(body.comments).to.be.eql([]);
               });
           });
