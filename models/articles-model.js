@@ -1,5 +1,20 @@
 const connection = require("../db/connection");
 
+exports.selectAllArticles = () => {
+  return connection
+    .select("articles.*")
+    .from("articles")
+    .leftJoin("comments", "articles.article_id", "=", "comments.article_id")
+    .count("comments.article_id AS comment_count ")
+    .groupBy("articles.article_id")
+    .then(articles => {
+      if(!articles || articles.length === 0){
+        return Promise.reject({ status: 404, msg: "Page not found" });
+      }else return articles;
+    });
+   
+}
+
 exports.selectArticleById = article_id => {
   return connection
     .first("articles.*")

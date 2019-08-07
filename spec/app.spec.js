@@ -74,12 +74,14 @@ describe("app", () => {
       });
     });
     describe("/articles", () => {
-      it.only("GET / status: 200, returns all article", () => {
+      it("GET / status: 200, returns all articles", () => {
         return request(app)
           .get("/api/articles")
           .expect(200)
           .then(({ body }) => {
-            expect(body.article).to.have.keys(
+            expect(body.articles).to.be.an("Array");
+            expect(body.articles[0]).to.be.an("Object");
+            expect(body.articles[0]).to.have.keys(
               `author`,
               `title`,
               `article_id`,
@@ -89,9 +91,17 @@ describe("app", () => {
               `votes`,
               `comment_count`
             );
-            //expect(body.article.article_id).to.equal(1);
           });
       });
+      it("GET / status: 404, returns all articles", () => {
+         return request(app)
+           .get("/api/not-a-route")
+           .expect(404)
+           .then(({body})=> {
+             console.log(body)
+             expect(body.msg).to.equal("Page not found")
+           })
+       });
       describe("/:article_id", () => {
         it("GET / status: 404, for non existing  article id", () => {
           return request(app)

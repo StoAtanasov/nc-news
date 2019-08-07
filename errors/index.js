@@ -16,5 +16,5 @@ if (err.status) {
 };
 
 exports.handle500 = (err,req,res, next) => {
-//console.log(err, "<<<<< handle500")
+console.log(err, "<<<<< handle500")
 };
