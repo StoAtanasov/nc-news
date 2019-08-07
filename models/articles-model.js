@@ -1,6 +1,14 @@
 const connection = require("../db/connection");
 
 exports.selectAllArticles = (sort_by = "created_at", order = "desc") => {
+  const permittedColumns = [
+    "author",
+    "title",
+    "topic",
+    "article_id",
+    "created_at",
+    "votes"
+  ];
   return connection
     .select(
       "articles.author",
