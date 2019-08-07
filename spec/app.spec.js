@@ -91,12 +91,12 @@ describe("app", () => {
         return request(app)
           .get('/api/articles?sort_by=created_at&order=desc&topic=mitch')
           .expect(200)
-          .then(res => {
-            expect(res.body.articles).to.be.an('array');
-            expect(res.body.articles[0].topic).to.equal('mitch');
-            expect(res.body.articles[1].topic).to.equal('mitch');
-            expect(res.body.articles[2].topic).to.equal('mitch');
-            expect(res.body.articles).to.be.descendingBy('created_at');
+          .then(({body}) => {
+            expect(body.articles).to.be.an('array');
+            expect(body.articles[0].topic).to.equal('mitch');
+            expect(body.articles[1].topic).to.equal('mitch');
+            expect(body.articles[2].topic).to.equal('mitch');
+            expect(body.articles).to.be.descendingBy('created_at');
           });
       });
     describe("/articles", () => {
