@@ -71,8 +71,9 @@ describe("app", () => {
               expect(body.msg).to.equal("Username does not exists");
             });
         });
+        
       });
-    });
+    });/////////////////////////
     describe("/articles", () => {
       it("GET / status: 200, returns all articles", () => {
         return request(app)
@@ -85,23 +86,41 @@ describe("app", () => {
               `author`,
               `title`,
               `article_id`,
-              `body`,
-              `topic`,
+               `topic`,
               `created_at`,
               `votes`,
               `comment_count`
             );
           });
       });
-      it("GET / status: 404, returns all articles", () => {
-         return request(app)
-           .get("/api/not-a-route")
-           .expect(404)
-           .then(({body})=> {
-             console.log(body)
-             expect(body.msg).to.equal("Page not found")
-           })
-       });
+      it("GET / status: 404, returns Page not found", () => {
+        return request(app)
+          .get("/api/not-a-route")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).to.equal("Page not found");
+          });
+      });
+      it("GET / status: 200, returns all articles , sorted in descending ctreated_at order by default", () => {
+        return request(app)
+          .get("/api/articles")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.be.sortedBy("created_at", {
+              descending: true
+            });
+          });
+      });
+      it.only("GET / status: 200, returns all articles , sorted by title order", () => {
+        return request(app)
+          .get("/api/articles?sort_by=title")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.be.sortedBy("title", {
+              descending: true
+            });
+          });
+      });
       describe("/:article_id", () => {
         it("GET / status: 404, for non existing  article id", () => {
           return request(app)
@@ -145,7 +164,7 @@ describe("app", () => {
               .send({ inc_votes: 1 })
               .expect(201)
               .then(({ body }) => {
-                expect(body.article[0]).to.contain.keys(
+                expect(body.article).to.contain.keys(
                   "article_id",
                   "title",
                   "body",
@@ -154,7 +173,7 @@ describe("app", () => {
                   "author",
                   "created_at"
                 );
-                expect(body.article[0].votes).to.equal(101);
+                expect(body.article.votes).to.equal(101);
               })
           );
         });
@@ -164,7 +183,7 @@ describe("app", () => {
             .send({})
             .expect(201)
             .then(({ body }) => {
-              expect(body.article[0]).to.contain.keys(
+              expect(body.article).to.contain.keys(
                 "article_id",
                 "title",
                 "body",
@@ -173,7 +192,7 @@ describe("app", () => {
                 "author",
                 "created_at"
               );
-              expect(body.article[0].votes).to.equal(100);
+              expect(body.article.votes).to.equal(100);
             });
         });
         it("PATCH / status: 400, when an invalid articile id is passed ", () => {
@@ -209,7 +228,7 @@ describe("app", () => {
             .send({ inc_votes: -40, pet: "cat" })
             .expect(201)
             .then(({ body }) => {
-              expect(body.article[0].votes).to.equal(60);
+              expect(body.article.votes).to.equal(60);
             });
         });
         describe("/comments", () => {
@@ -359,10 +378,12 @@ describe("app", () => {
           });
           it("GET / status: 404, returns an error if a non-existent article_id is used and valid query passed", () => {
             return request(app)
-              .get("/api/articles/100000/comments?sort_by=author&order=asc")
+              .get(
+                "/api/articles/100000/comments?sort_by=author&order=asc"
+              )
               .expect(404)
               .then(({ body }) => {
-                expect(body.msg).to.equal("Not found");
+                expect(body.msg).to.equal("Page not found");
               });
           });
           it("GET / status:200 ignore errneous sort_by quaries passed", () => {
@@ -395,14 +416,12 @@ describe("app", () => {
                 });
               });
           });
-          xit("GET / status:200 , returns an empty array when an article without any comments is passed", () => {
+        it("GET / status:200 , returns an empty array when an article without any comments passed", () => {
             return request(app)
-              .get("/api/articles/1/comments")
+              .get("/api/articles/11/comments")
               .expect(200)
-              .then(({ body }) => {
-                expect(body.comments).to.be.sortedBy("created_at", {
-                  descending: true
-                });
+              .then(({ body }) => {   
+                expect(body.comments).to.be.eql([]);
               });
           });
         });

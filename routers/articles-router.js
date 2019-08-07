@@ -7,7 +7,7 @@ const {
 
 const {
   sendNewArticleComment,
-  sendAllComments
+  sendAllCommentsByArticle
 } = require("../controllers/comments-controller");
 
 articlesRouter
@@ -15,7 +15,10 @@ articlesRouter
   .get(sendArticleById)
   .patch(updateArticle);
 
-articlesRouter.route("/:article_id/comments").post(sendNewArticleComment).get(sendAllComments);
+articlesRouter
+  .route("/:article_id/comments")
+  .post(sendNewArticleComment)
+  .get(sendAllCommentsByArticle);
 
 articlesRouter.route("/").get(sendAllArticles);
 

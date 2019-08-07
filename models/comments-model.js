@@ -1,4 +1,5 @@
 const connection = require("../db/connection");
+const { selectArticleById } = require("./articles-model");
 
 exports.createCommentByArticle = (article_id, username, comment) => {
   return connection
@@ -17,12 +18,11 @@ exports.createCommentByArticle = (article_id, username, comment) => {
     });
 };
 
-exports.selectAllComments = (
+exports.selectAllCommentsByArticle = (
   article_id,
   sort_by = "created_at",
   order = "desc"
 ) => {
-
   const permittedColunms = [
     "comment_id",
     "author",
@@ -31,21 +31,31 @@ exports.selectAllComments = (
     "created_at",
     "body"
   ];
-  
-  const permittedOrders = ["asc","desc"];
 
-  if (!permittedColunms.includes(sort_by) || !permittedOrders.includes(order)){
+  const permittedOrders = ["asc", "desc"];
+
+  if (!permittedColunms.includes(sort_by) || !permittedOrders.includes(order)) {
     sort_by = "created_at";
     order = "desc";
   }
-    return connection
-      .select("comments.*")
-      .from("comments")
-      .orderBy(sort_by, order)
-      .where("comments.article_id", article_id)
-      .then(comments => {
-        if (!comments || !comments.length) {
-          return Promise.reject({ status: 404, msg: "Not found" });
-        } else return comments;
-      });
+  if (permittedColunms.includes(article_id)) {
+  }
+
+  return connection
+    .select("comments.*")
+    .from("comments")
+    .orderBy(sort_by, order)
+    .where("comments.article_id", "=", article_id)
+    .then(comments => {
+       if (!comments.length) {
+        return selectArticleById(article_id).then(article => {
+          if (article) {
+            return [];
+          } else {
+            return Promise.reject({ status: 404, msg: "Not found" });
+          }
+        });
+       
+      } else return comments;
+    });
 };
