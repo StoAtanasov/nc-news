@@ -38,9 +38,7 @@ exports.selectAllCommentsByArticle = (
     sort_by = "created_at";
     order = "desc";
   }
-  if (permittedColunms.includes(article_id)) {
-  }
-
+  
   return connection
     .select("comments.*")
     .from("comments")

@@ -9,6 +9,13 @@ exports.selectAllArticles = (sort_by = "created_at", order = "desc") => {
     "created_at",
     "votes"
   ];
+
+  const permittedOrders = ["asc", "desc"];
+
+  if(!permittedColumns.includes(sort_by) || !permittedOrders.includes(order)){
+    sort_by = "created_at";
+    order = "desc";
+  }
   return connection
     .select(
       "articles.author",

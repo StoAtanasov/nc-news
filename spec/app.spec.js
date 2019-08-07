@@ -73,7 +73,7 @@ describe("app", () => {
         });
         
       });
-    });/////////////////////////
+    });
     describe("/articles", () => {
       it("GET / status: 200, returns all articles", () => {
         return request(app)
@@ -130,7 +130,7 @@ describe("app", () => {
               descending: false
             });
           });
-      });///////////////////////////////////////////////////////
+      });
       it("GET / status: 200, returns all articles , sorted by valid query and ordered by given order ", () => {
         return request(app)
           .get("/api/articles?sort_by=title&order=asc")
@@ -141,9 +141,19 @@ describe("app", () => {
             });
           });
       });
-      it.only("GET / status:200 ignore errneous sort_by quaries passed", () => {
+      it("GET / status:200 ignore errneous sort_by queries passed", () => {
         return request(app)
-          .get("/api/articles?sort_by=wrong-query")
+          .get("/api/articles?sort_by=invalid-query")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.be.sortedBy("created_at", {
+              descending: true
+            });
+          });
+      });
+      it.only("GET / status:200 ignore errneous order queries passed", () => {
+        return request(app)
+          .get("/api/articles?order=invalid-order")
           .expect(200)
           .then(({ body }) => {
             expect(body.articles).to.be.sortedBy("created_at", {
@@ -416,7 +426,7 @@ describe("app", () => {
                 expect(body.msg).to.equal("Page not found");
               });
           });
-          it("GET / status:200 ignore errneous sort_by quaries passed", () => {
+          it("GET / status:200 ignore errneous sort_by queries passed", () => {
             return request(app)
               .get("/api/articles/1/comments?sort_by=wrong_query")
               .expect(200)
@@ -426,7 +436,7 @@ describe("app", () => {
                 });
               });
           });
-          it("GET / status:200 ignore errneous order quaries passed", () => {
+          it("GET / status:200 ignore errneous order queries passed", () => {
             return request(app)
               .get("/api/articles/1/comments?order=wrong_query")
               .expect(200)
@@ -436,7 +446,7 @@ describe("app", () => {
                 });
               });
           });
-          it("GET / status:200 ignore errneous sort_by and order quaries passed", () => {
+          it("GET / status:200 ignore errneous sort_by and order queries passed", () => {
             return request(app)
               .get("/api/articles/1/comments?order=wrong_query")
               .expect(200)
