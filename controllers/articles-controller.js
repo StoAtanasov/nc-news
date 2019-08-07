@@ -25,9 +25,9 @@ exports.updateArticle = (req, res, next) => {
 };
 
 exports.sendAllArticles = (req, res, next) => {
+  const {sort_by, order, author, topic} = req.query;
   console.log(req.query);
-  const {sort_by, order} = req.query;
-  selectAllArticles(sort_by, order)
+  selectAllArticles(sort_by, order, author, topic)
     .then(articles => {
       res.status(200).send({ articles });
     })

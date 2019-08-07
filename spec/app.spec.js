@@ -73,6 +73,32 @@ describe("app", () => {
         });
       });
     });
+    it('GET / status: 200, respond with array of article objects, with queries like- sort by created_at-ascending and filtered by author', () => {
+        return request(app)
+          .get(
+            "/api/articles?sort_by=created_at&order=asc&author=butter_bridge"
+          )
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.be.an("array");
+            expect(body.articles[0].author).to.equal("butter_bridge");
+            expect(body.articles[1].author).to.equal("butter_bridge");
+            expect(body.articles[2].author).to.equal("butter_bridge");
+            expect(body.articles).to.be.ascendingBy("created_at");
+          });
+      });
+      it('GET / status: 200, respond with array of article objects, accept queries sort by body-descending, filter by topic', () => {
+        return request(app)
+          .get('/api/articles?sort_by=created_at&order=desc&topic=mitch')
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.be.an('array');
+            expect(res.body.articles[0].topic).to.equal('mitch');
+            expect(res.body.articles[1].topic).to.equal('mitch');
+            expect(res.body.articles[2].topic).to.equal('mitch');
+            expect(res.body.articles).to.be.descendingBy('created_at');
+          });
+      });
     describe("/articles", () => {
       it("GET / status: 200, returns all articles", () => {
         return request(app)
@@ -160,7 +186,7 @@ describe("app", () => {
             });
           });
       });
-      it.only("GET / status:200, ignore erroneous sorted_by and order queries", () => {
+      it("GET / status:200, ignore erroneous sorted_by and order queries", () => {
         return request(app)
           .get("/api/articles?sort_by=invalid-query&order=invalid-order")
           .expect(200)

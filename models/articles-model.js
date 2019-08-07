@@ -1,6 +1,6 @@
 const connection = require("../db/connection");
 
-exports.selectAllArticles = (sort_by = "created_at", order = "desc") => {
+exports.selectAllArticles = (sort_by = "created_at", order = "desc", author, topic) => {
   const permittedColumns = [
     "author",
     "title",
@@ -30,11 +30,24 @@ exports.selectAllArticles = (sort_by = "created_at", order = "desc") => {
     .count("comments.article_id AS comment_count ")
     .groupBy("articles.article_id")
     .orderBy(sort_by, order)
-    .then(articles => {
-      if (!articles || articles.length === 0) {
-        return Promise.reject({ status: 404, msg: "Page not found" });
-      } else return articles;
+    .modify(function(queryBuilder) {
+      if (author && topic) {
+        queryBuilder.where('articles.author', author);
+      } else if (author) {
+        queryBuilder.where('articles.author', author);
+      } else if (topic) {
+        queryBuilder.where('articles.topic', topic);
+      }
+    })
+    .then(article => {
+      if (!article) {
+        return Promise.reject({
+          status: 404,
+          msg: "Page not found"
+        });
+      } else return article;
     });
+    ;
 };
 
 exports.selectArticleById = article_id => {
