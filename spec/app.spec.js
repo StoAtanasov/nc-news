@@ -141,7 +141,7 @@ describe("app", () => {
             });
           });
       });
-      it("GET / status:200 ignore errneous sort_by queries passed", () => {
+      it("GET / status:200, ignore erroneous sort_by queries", () => {
         return request(app)
           .get("/api/articles?sort_by=invalid-query")
           .expect(200)
@@ -151,7 +151,7 @@ describe("app", () => {
             });
           });
       });
-      it.only("GET / status:200 ignore errneous order queries passed", () => {
+      it.only("GET / status:200, ignore erroneous order queries", () => {
         return request(app)
           .get("/api/articles?order=invalid-order")
           .expect(200)
@@ -426,7 +426,7 @@ describe("app", () => {
                 expect(body.msg).to.equal("Page not found");
               });
           });
-          it("GET / status:200 ignore errneous sort_by queries passed", () => {
+          it("GET / status:200 ignore erroneous sort_by queries passed", () => {
             return request(app)
               .get("/api/articles/1/comments?sort_by=wrong_query")
               .expect(200)
@@ -436,7 +436,7 @@ describe("app", () => {
                 });
               });
           });
-          it("GET / status:200 ignore errneous order queries passed", () => {
+          it("GET / status:200 ignore erroneous order queries", () => {
             return request(app)
               .get("/api/articles/1/comments?order=wrong_query")
               .expect(200)
@@ -446,7 +446,7 @@ describe("app", () => {
                 });
               });
           });
-          it("GET / status:200 ignore errneous sort_by and order queries passed", () => {
+          it("GET / status:200 ignore erroneous sort_by and order queries", () => {
             return request(app)
               .get("/api/articles/1/comments?order=wrong_query")
               .expect(200)
