@@ -111,13 +111,23 @@ describe("app", () => {
             });
           });
       });
-      it.only("GET / status: 200, returns all articles , sorted by title order", () => {
+      it("GET / status: 200, returns all articles , sorted by title order", () => {
         return request(app)
           .get("/api/articles?sort_by=title")
           .expect(200)
           .then(({ body }) => {
             expect(body.articles).to.be.sortedBy("title", {
               descending: true
+            });
+          });
+      });
+      it.only("GET / status: 200, returns all articles , sorted by default  in ascending order ", () => {
+        return request(app)
+          .get("/api/articles?order=asc")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.be.sortedBy("created_at", {
+              descending: false
             });
           });
       });

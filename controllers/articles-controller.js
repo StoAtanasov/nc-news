@@ -26,12 +26,12 @@ exports.updateArticle = (req, res, next) => {
 
 exports.sendAllArticles = (req, res, next) => {
   console.log(req.query);
-  const {sort_by} = req.query;
-  selectAllArticles(sort_by)
-  .then(articles =>{
-    res.status(200).send({ articles });
-  })
-  .catch(err => {
-    next(err)
-  })
+  const {sort_by, order} = req.query;
+  selectAllArticles(sort_by, order)
+    .then(articles => {
+      res.status(200).send({ articles });
+    })
+    .catch(err => {
+      next(err);
+    });
 };
