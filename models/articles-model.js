@@ -79,3 +79,14 @@ exports.selectUpdatedArticle = (article_id, inc_votes = 0) => {
       } else return article;
     });
 };
+
+exports.checkIfExists = (query, table, column) =>{
+  return connection
+    .select("*")
+    .from(table)
+    .where(column, query)
+    .then(row => {
+      if (row.length === 0) return false;
+      else return true;
+    });
+}

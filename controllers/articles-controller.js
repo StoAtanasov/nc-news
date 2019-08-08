@@ -1,7 +1,8 @@
 const {
   selectArticleById,
   selectUpdatedArticle,
-  selectAllArticles
+  selectAllArticles,
+  checkIfExists
 } = require("../models/articles-model");
 
 exports.sendArticleById = (req, res, next) => {
@@ -25,11 +26,26 @@ exports.updateArticle = (req, res, next) => {
 };
 
 exports.sendAllArticles = (req, res, next) => {
-  const {sort_by, order, author, topic} = req.query;
-  console.log(req.query);
+  const { sort_by, order, author, topic } = req.query;
+  
   selectAllArticles(sort_by, order, author, topic)
     .then(articles => {
-      res.status(200).send({ articles });
+      const validAuthor = author
+        ? checkIfExists(author, "users", "username")
+        : null;
+      const validTopic = topic
+        ? checkIfExists(topic, "slug", "description")
+        : null;
+      return Promise.all([validAuthor, validTopic, articles]);
+    })
+    .then(([validAuthor, validTopic, articles]) => {
+      if (validAuthor === false){
+        return Promise.reject({status:404, msg: "Author not found"})
+      }else if( validTopic === false) {
+        return Promise.reject({status:404, msg: "Topic not found"})
+      }else {
+          res.status(200).send({ articles });
+      }
     })
     .catch(err => {
       next(err);

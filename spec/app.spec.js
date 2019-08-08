@@ -31,7 +31,7 @@ describe("app", () => {
           expect(body.msg).to.equal("Page not found");
         });
     });
-    it("GET / status: 200, returns a body with all endpoints", () => {
+    it("GET / status: 200, returns a JSON body with all endpoints", () => {
       return request(app)
         .get("/api")
         .expect(200)
@@ -73,32 +73,7 @@ describe("app", () => {
         });
       });
     });
-    it('GET / status: 200, respond with array of article objects, with queries like- sort by created_at-ascending and filtered by author', () => {
-        return request(app)
-          .get(
-            "/api/articles?sort_by=created_at&order=asc&author=butter_bridge"
-          )
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.articles).to.be.an("array");
-            expect(body.articles[0].author).to.equal("butter_bridge");
-            expect(body.articles[1].author).to.equal("butter_bridge");
-            expect(body.articles[2].author).to.equal("butter_bridge");
-            expect(body.articles).to.be.ascendingBy("created_at");
-          });
-      });
-      it('GET / status: 200, respond with array of article objects, accept queries sort by body-descending, filter by topic', () => {
-        return request(app)
-          .get('/api/articles?sort_by=created_at&order=desc&topic=mitch')
-          .expect(200)
-          .then(({body}) => {
-            expect(body.articles).to.be.an('array');
-            expect(body.articles[0].topic).to.equal('mitch');
-            expect(body.articles[1].topic).to.equal('mitch');
-            expect(body.articles[2].topic).to.equal('mitch');
-            expect(body.articles).to.be.descendingBy('created_at');
-          });
-      });
+
     describe("/articles", () => {
       it("GET / status: 200, returns all articles", () => {
         return request(app)
@@ -194,6 +169,60 @@ describe("app", () => {
             expect(body.articles).to.be.sortedBy("created_at", {
               descending: true
             });
+          });
+      });
+      it("GET / status: 200, returns all articles, filtered by author", () => {
+        return request(app)
+          .get("/api/articles?author=butter_bridge")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.sortedBy("author", {
+              descending: true
+            });
+          });
+      });
+      it("GET / status: 200, returns all articles, filtered by topic", () => {
+        return request(app)
+          .get("/api/articles?topic=mitch")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.sortedBy("topic", {
+              descending: true
+            });
+          });
+      });
+      it("GET / status: 200, returns an array of article objects, with queries sort by created_at-ascending order and filtered by author", () => {
+        return request(app)
+          .get(
+            "/api/articles?sort_by=created_at&order=asc&author=butter_bridge"
+          )
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.be.an("array");
+            expect(body.articles[0].author).to.equal("butter_bridge");
+            expect(body.articles[1].author).to.equal("butter_bridge");
+            expect(body.articles[2].author).to.equal("butter_bridge");
+            expect(body.articles).to.be.ascendingBy("created_at");
+          });
+      });
+      it("GET / status: 200, returns an array of article objects, accept queries sort by body-descending order and filter by topic", () => {
+        return request(app)
+          .get("/api/articles?sort_by=created_at&order=desc&topic=mitch")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.be.an("array");
+            expect(body.articles[0].topic).to.equal("mitch");
+            expect(body.articles[1].topic).to.equal("mitch");
+            expect(body.articles[2].topic).to.equal("mitch");
+            expect(body.articles).to.be.descendingBy("created_at");
+          });
+      });
+       it.only("GET / status: 404, returns an error if  invalid author", () => {
+        return request(app)
+          .get("/api/articles?author=nothing")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).to.equal("Author not found");
           });
       });
       describe("/:article_id", () => {

@@ -46,7 +46,8 @@ exports.selectAllCommentsByArticle = (
     .where("comments.article_id", "=", article_id)
     .then(comments => {
        if (!comments.length) {
-        return selectArticleById(article_id).then(article => {
+        return selectArticleById(article_id)
+        .then(article => {
           if (article) {
             return [];
           } else {
