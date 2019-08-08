@@ -21,6 +21,7 @@ app.use("/api", apiRouter);
 app.use(handlePSQLErrors);
 app.use(handleCustomErrors);
 app.use(handle500);
+
 app.all("/*", ( req, res, next) => {
   res.status(404).send({ msg: "Page not found" });
 });

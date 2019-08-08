@@ -32,7 +32,8 @@ exports.selectAllArticles = (sort_by = "created_at", order = "desc", author, top
     .orderBy(sort_by, order)
     .modify(function(queryBuilder) {
       if (author && topic) {
-        queryBuilder.where('articles.author', author);
+        queryBuilder.where('articles.author', author)
+        .and('articles.topic', topic);
       } else if (author) {
         queryBuilder.where('articles.author', author);
       } else if (topic) {

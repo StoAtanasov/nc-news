@@ -1,7 +1,8 @@
 const {
   createCommentByArticle,
   selectAllCommentsByArticle,
-  addCommentVote
+  addCommentVote,
+  deleteComment
 } = require("../models/comments-model");
 
 exports.sendNewArticleComment = (req, res, next) => {
@@ -41,3 +42,15 @@ exports.sendUpdateComment = (req, res, next) => {
     next(err)
   });
 };
+
+exports.removeComment = (req, res, next) => {
+  const {comment_id} = req.params;
+   deleteComment(comment_id)
+    .then(comment =>{
+      res.sendStatus(204);
+    })
+    .catch(err => {
+      next(err)
+    })
+  
+}

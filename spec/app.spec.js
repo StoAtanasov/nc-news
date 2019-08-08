@@ -595,12 +595,21 @@ describe("app", () => {
               expect(body.msg).to.equal("Invalid comment");
             });
         });
-        it.only("DELETE / status: 204, returns no content", () => {
+        it("DELETE / status: 204, returns no content", () => {
           return request(app)
-            .delete("/api/comments/1")
-            .send({ inc_votes: 1 })
+            .delete("/api/comments/2")
             .expect(204);
         });
+        it("DELETE / status: 404, when deleting non existent comment", () => {
+          return request(app)
+            .delete("/api/comments/10000")
+            .expect(404);
+        });
+      });
+      it.only("DELETE / status: 400, when deleting invalid coment id", () => {
+        return request(app)
+          .delete("/api/comments/not-an-id")
+          .expect(400);
       });
     });
   });

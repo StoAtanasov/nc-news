@@ -74,3 +74,16 @@ exports.addCommentVote = (id, inc_votes) => {
       });
   }
 };
+
+exports.deleteComment = (id) => {
+  return connection
+    .select("*")
+    .from("comments")
+    .where("comments.comment_id", "=", id)
+    .del()
+    .then(deletedRow => {
+      if (deletedRow === 0){
+        return Promise.reject({status:404, })
+      }
+    });
+}
