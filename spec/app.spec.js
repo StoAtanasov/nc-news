@@ -217,12 +217,20 @@ describe("app", () => {
             expect(body.articles).to.be.descendingBy("created_at");
           });
       });
-       it.only("GET / status: 404, returns an error if  invalid author", () => {
+       it("GET / status: 404, returns an error if  invalid author", () => {
         return request(app)
-          .get("/api/articles?author=nothing")
+          .get("/api/articles?author=invalid")
           .expect(404)
           .then(({ body }) => {
             expect(body.msg).to.equal("Author not found");
+          });
+      });
+      it.only("GET / status: 404, returns an error if  invalid topic", () => {
+        return request(app)
+          .get("/api/articles?topic=invalid")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).to.equal("Topic not found");
           });
       });
       describe("/:article_id", () => {

@@ -34,7 +34,7 @@ exports.sendAllArticles = (req, res, next) => {
         ? checkIfExists(author, "users", "username")
         : null;
       const validTopic = topic
-        ? checkIfExists(topic, "slug", "description")
+        ? checkIfExists(topic, "topics", "slug")
         : null;
       return Promise.all([validAuthor, validTopic, articles]);
     })

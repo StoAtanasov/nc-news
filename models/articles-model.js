@@ -73,7 +73,6 @@ exports.selectUpdatedArticle = (article_id, inc_votes = 0) => {
     .where("articles.article_id", article_id)
     .returning("*")
     .then(([article]) => {
-      // destructure array
       if (!article) {
         return Promise.reject({ status: 404, msg: "Article not found" });
       } else return article;
