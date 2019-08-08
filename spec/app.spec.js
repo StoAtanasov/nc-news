@@ -39,7 +39,31 @@ describe("app", () => {
           expect(body).to.be.an("object");
         });
     });
+    xit("Method not allowed: status 405 for /api", () => {
+      const invalidMethods = ["patch", "put", "post", "del"];
+      const methodPromises = invalidMethods.map(method => {
+        return request(app)
+          [method]("/api")
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).to.equal("Method not allowed");
+          });
+      });
+      return Promise.all(methodPromises);
+    });
     describe("/topics", () => {
+      it("Method not allowed: status 405 for /topics", () => {
+        const invalidMethods = ["patch", "put", "post", "del"];
+        const methodPromises = invalidMethods.map(method => {
+          return request(app)
+            [method]("/api/topics")
+            .expect(405)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Method not allowed");
+            });
+        });
+        return Promise.all(methodPromises);
+      });
       it("GET  / status: 200, returns an array of topics objects", () => {
         return request(app)
           .get("/api/topics")
@@ -350,7 +374,7 @@ describe("app", () => {
               expect(body.article.votes).to.equal(60);
             });
         });
-        describe.only("/comments", () => {
+        describe("/comments", () => {
           it("POST / status: 201, returns an object with the username and the new comment", () => {
             return request(app)
               .post("/api/articles/1/comments")

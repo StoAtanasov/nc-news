@@ -4,8 +4,12 @@ const topicsRouter = require("../routers/topics-router");
 const usersRouter = require("./users-router");
 const articlesRouter = require("./articles-router");
 const commentsRouter = require("./comments-router");
+const invalidMethods = require("../errors");
 
-apiRouter.route("/").get((req,res) => res.status(200).send(endPoints));
+apiRouter
+  .route("/")
+  .get((req, res) => res.status(200).send(endPoints))
+  .all(invalidMethods);
 apiRouter.use("/topics",topicsRouter);
 apiRouter.use("/users", usersRouter);
 apiRouter.use("/articles", articlesRouter);
