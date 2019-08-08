@@ -217,7 +217,7 @@ describe("app", () => {
             expect(body.articles).to.be.descendingBy("created_at");
           });
       });
-       it("GET / status: 404, returns an error if  invalid author", () => {
+      it("GET / status: 404, returns an error if  invalid author", () => {
         return request(app)
           .get("/api/articles?author=invalid")
           .expect(404)
@@ -225,7 +225,7 @@ describe("app", () => {
             expect(body.msg).to.equal("Author not found");
           });
       });
-      it.only("GET / status: 404, returns an error if  invalid topic", () => {
+      it("GET / status: 404, returns an error if  invalid topic", () => {
         return request(app)
           .get("/api/articles?topic=invalid")
           .expect(404)
@@ -317,6 +317,7 @@ describe("app", () => {
             });
         });
         it("PATCH / status: 404, patching article with valid id  that does not exists ", () => {
+          ///////////////////////////////
           return request(app)
             .patch("/api/articles/100000")
             .send({ inc_votes: 1 })
@@ -534,6 +535,19 @@ describe("app", () => {
                 expect(body.comments).to.be.eql([]);
               });
           });
+        });
+      });
+    });
+    describe.only("/comments", () => {
+      describe("/:comment_id", () => {
+        it("PATCH / status: 200, patching comment with valid id  that does not exists ", () => {
+          return request(app)
+            .patch("/api/comments/1")
+            .send({ inc_votes: 1 })
+            .expect(200)
+            .then(({ body }) => {
+              console.log(body);
+            });
         });
       });
     });
