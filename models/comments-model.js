@@ -38,23 +38,39 @@ exports.selectAllCommentsByArticle = (
     sort_by = "created_at";
     order = "desc";
   }
-  
+
   return connection
     .select("comments.*")
     .from("comments")
     .orderBy(sort_by, order)
     .where("comments.article_id", "=", article_id)
     .then(comments => {
-       if (!comments.length) {
-        return selectArticleById(article_id)
-        .then(article => {
+      if (!comments.length) {
+        return selectArticleById(article_id).then(article => {
           if (article) {
             return [];
           } else {
             return Promise.reject({ status: 404, msg: "Not found" });
           }
         });
-       
       } else return comments;
     });
+};
+
+exports.addCommentVote = (id, inc_votes) => {
+  if (isNaN(inc_votes)) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  } else {
+    return connection
+      .first("*")
+      .from("comments")
+      .where("comment_id", id)
+      .increment("votes", inc_votes)
+      .returning("*")
+      .then(([comment]) => {
+        if (!comment) {
+          return Promise.reject({status:404, msg: "Invalid comment"})
+        } else return comment;
+      });
+  }
 };

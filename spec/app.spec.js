@@ -538,16 +538,68 @@ describe("app", () => {
         });
       });
     });
-    describe.only("/comments", () => {
+    describe("/comments", () => {
       describe("/:comment_id", () => {
-        it("PATCH / status: 200, patching comment with valid id  that does not exists ", () => {
+        it("PATCH / status: 200, patching comment, increasing votes with one vote", () => {
           return request(app)
             .patch("/api/comments/1")
             .send({ inc_votes: 1 })
             .expect(200)
             .then(({ body }) => {
-              console.log(body);
+              expect(body.comment.votes).to.equal(17);
             });
+        });
+        it("PATCH / status: 200, patching comment, decreasing votes with one vote", () => {
+          return request(app)
+            .patch("/api/comments/1")
+            .send({ inc_votes: -1 })
+            .expect(200)
+            .then(({ body }) => {
+              console.log(body);
+              expect(body.comment.votes).to.equal(15);
+            });
+        });
+        it("PATCH / status: 200, ignores any additional element passed in through the body", () => {
+          return request(app)
+            .patch("/api/comments/1")
+            .send({ inc_votes: 1, pet: "cat" })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.comment.votes).to.equal(17);
+            });
+        });
+        it("PATCH / status: 400, returns an error where no inc_votes value is provided", () => {
+          return request(app)
+            .patch("/api/comments/1")
+            .send({})
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Bad request");
+            });
+        });
+        it("PATCH / status: 400, returns an error where an invalid inc_votes value is provided", () => {
+          return request(app)
+            .patch("/api/comments/1")
+            .send({ inc_votes: "Invalid" })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Bad request");
+            });
+        });
+        it("PATCH / status: 404, returns an error when the comment id does not exists", () => {
+          return request(app)
+            .patch("/api/comments/10000")
+            .send({ inc_votes: 1 })
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Invalid comment");
+            });
+        });
+        it.only("DELETE / status: 204, returns no content", () => {
+          return request(app)
+            .delete("/api/comments/1")
+            .send({ inc_votes: 1 })
+            .expect(204);
         });
       });
     });

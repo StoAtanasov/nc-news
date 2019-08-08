@@ -1,6 +1,7 @@
 const {
   createCommentByArticle,
-  selectAllCommentsByArticle
+  selectAllCommentsByArticle,
+  addCommentVote
 } = require("../models/comments-model");
 
 exports.sendNewArticleComment = (req, res, next) => {
@@ -26,4 +27,17 @@ exports.sendAllCommentsByArticle = (req, res, next) => {
     .catch(err => {
       next(err);
     });
+};
+
+exports.sendUpdateComment = (req, res, next) => {
+  const {comment_id} = req.params;
+  const {inc_votes} =  req.body;
+  console.log(inc_votes);
+  addCommentVote(comment_id, inc_votes)
+  .then(comment => {
+    res.status(200).send({comment})
+  })
+  .catch(err => {
+    next(err)
+  });
 };
