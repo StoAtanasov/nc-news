@@ -39,7 +39,7 @@ describe("app", () => {
           expect(body).to.be.an("object");
         });
     });
-    xit("Method not allowed: status 405 for /api", () => {
+    it.only("Method not allowed: status 405 for /api", () => {
       const invalidMethods = ["patch", "put", "post", "del"];
       const methodPromises = invalidMethods.map(method => {
         return request(app)
@@ -105,8 +105,31 @@ describe("app", () => {
         });
       });
     });
-
+     it("Method not allowed: status 405 for /users/:username", () => {
+       const invalidMethods = ["patch", "put", "post", "delete"];
+       const methodPromises = invalidMethods.map(method => {
+         return request(app)
+           [method]("/api/users/butter_bridge")
+           .expect(405)
+           .then(({ body }) => {
+             expect(body.msg).to.equal("Method not allowed");
+           });
+       });
+       return Promise.all(methodPromises);
+     });
     describe("/articles", () => {
+      it ("Method not allowed: status 405 for /articles", () => {
+        const invalidMethods = ["patch", "put", "post", "delete"];
+        const methodPromises = invalidMethods.map(method => {
+          return request(app)
+            [method]("/api/articles")
+            .expect(405)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Method not allowed");
+            });
+        });
+        return Promise.all(methodPromises);
+      });
       it("GET / status: 200, returns all articles", () => {
         return request(app)
           .get("/api/articles")
@@ -266,6 +289,18 @@ describe("app", () => {
           });
       });
       describe("/:article_id", () => {
+        it("Method not allowed: status 405 for /articles/:article_id", () => {
+          const invalidMethods = ["put", "post", "delete"];
+          const methodPromises = invalidMethods.map(method => {
+            return request(app)
+              [method]("/api/articles/1")
+              .expect(405)
+              .then(({ body }) => {
+                expect(body.msg).to.equal("Method not allowed");
+              });
+          });
+          return Promise.all(methodPromises);
+        });
         it("GET / status: 404, for non existing  article id", () => {
           return request(app)
             .get("/api/articles/1000")
@@ -375,6 +410,18 @@ describe("app", () => {
             });
         });
         describe("/comments", () => {
+           it('Method not allowed: status 405 for /comments/comments_id', () => {
+            const invalidMethods = ["put", "patch","delete"];
+            const methodPromises = invalidMethods.map(method => {
+              return request(app)
+                [method]("/api/articles/1/comments")
+                .expect(405)
+                .then(({ body }) => {
+                  expect(body.msg).to.equal("Method not allowed");
+                });
+            });
+            return Promise.all(methodPromises);
+          });
           it("POST / status: 201, returns an object with the username and the new comment", () => {
             return request(app)
               .post("/api/articles/1/comments")
@@ -570,6 +617,18 @@ describe("app", () => {
     });
     describe("/comments", () => {
       describe("/:comment_id", () => {
+         it("Method not allowed: status 405 for /comments/comments_id", () => {
+           const invalidMethods = ["get", "put", "post"];
+           const methodPromises = invalidMethods.map(method => {
+             return request(app)
+               [method]("/api/comments/1")
+               .expect(405)
+               .then(({ body }) => {
+                 expect(body.msg).to.equal("Method not allowed");
+               });
+           });
+           return Promise.all(methodPromises);
+         });
         it("PATCH / status: 200, patching comment, increasing votes with one vote", () => {
           return request(app)
             .patch("/api/comments/1")

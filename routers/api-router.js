@@ -4,7 +4,7 @@ const topicsRouter = require("../routers/topics-router");
 const usersRouter = require("./users-router");
 const articlesRouter = require("./articles-router");
 const commentsRouter = require("./comments-router");
-const invalidMethods = require("../errors");
+const {invalidMethods} = require("../errors");
 
 apiRouter
   .route("/")
