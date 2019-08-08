@@ -9,9 +9,10 @@ app.use("/api", apiRouter);
 app.use(handlePSQLErrors);
 app.use(handleCustomErrors);
 app.use(handle500);
-app.use(invalidMethods);
 
 app.all("/*", ( req, res, next) => {
   res.status(404).send({ msg: "Page not found" });
 });
+
+app.use(invalidMethods);
 module.exports = app;

@@ -27,8 +27,7 @@ exports.updateArticle = (req, res, next) => {
 
 exports.sendAllArticles = (req, res, next) => {
   const { sort_by, order, author, topic } = req.query;
-  
-  selectAllArticles(sort_by, order, author, topic)
+   selectAllArticles(sort_by, order, author, topic)
     .then(articles => {
       const validAuthor = author
         ? checkIfExists(author, "users", "username")

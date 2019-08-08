@@ -81,9 +81,12 @@ exports.deleteComment = (id) => {
     .from("comments")
     .where("comments.comment_id", "=", id)
     .del()
-    .then(deletedRow => {
-      if (deletedRow === 0){
-        return Promise.reject({status:404, })
+    .then(deleted => {
+      if (!deleted){
+        return Promise.reject({
+          status: 404,
+          msg: "Comment does not exist"
+        });
       }
     });
 }

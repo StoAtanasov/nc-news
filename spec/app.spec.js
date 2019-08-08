@@ -50,6 +50,14 @@ describe("app", () => {
             expect(body.topics[0]).to.have.keys("slug", "description");
           });
       });
+      it("GET  / status: 404 , response with message page not found, when passed wrong route", () => {
+        return request(app)
+          .get("/api/not-a-route")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).to.equal("Page not found");
+          });
+      });
     });
     describe("/users", () => {
       describe("/:username", () => {
@@ -271,7 +279,6 @@ describe("app", () => {
         it("PATCH / status: 201, returns an updated article", () => {
           return (
             request(app)
-              // create a test for .send({ }) return the same id witn nothing changed in it
               .patch("/api/articles/1")
               .send({ inc_votes: 1 })
               .expect(201)
@@ -317,7 +324,6 @@ describe("app", () => {
             });
         });
         it("PATCH / status: 404, patching article with valid id  that does not exists ", () => {
-          ///////////////////////////////
           return request(app)
             .patch("/api/articles/100000")
             .send({ inc_votes: 1 })
@@ -344,7 +350,7 @@ describe("app", () => {
               expect(body.article.votes).to.equal(60);
             });
         });
-        describe("/comments", () => {
+        describe.only("/comments", () => {
           it("POST / status: 201, returns an object with the username and the new comment", () => {
             return request(app)
               .post("/api/articles/1/comments")
@@ -602,13 +608,19 @@ describe("app", () => {
         it("DELETE / status: 404, when deleting non existent comment", () => {
           return request(app)
             .delete("/api/comments/10000")
-            .expect(404);
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Comment does not exist");
+            });
         });
       });
       it("DELETE / status: 400, when deleting invalid comment id", () => {
         return request(app)
           .delete("/api/comments/not-an-id")
-          .expect(400);
+          .expect(400)
+          .then(({body}) =>{
+            expect(body.msg).to.equal("Bad request");
+          })
       });
     });
   });
