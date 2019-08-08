@@ -555,7 +555,6 @@ describe("app", () => {
             .send({ inc_votes: -1 })
             .expect(200)
             .then(({ body }) => {
-              console.log(body);
               expect(body.comment.votes).to.equal(15);
             });
         });
@@ -606,7 +605,7 @@ describe("app", () => {
             .expect(404);
         });
       });
-      it.only("DELETE / status: 400, when deleting invalid coment id", () => {
+      it("DELETE / status: 400, when deleting invalid comment id", () => {
         return request(app)
           .delete("/api/comments/not-an-id")
           .expect(400);

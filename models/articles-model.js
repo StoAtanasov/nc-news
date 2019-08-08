@@ -7,7 +7,8 @@ exports.selectAllArticles = (sort_by = "created_at", order = "desc", author, top
     "topic",
     "article_id",
     "created_at",
-    "votes"
+    "votes",
+    "comment_count"
   ];
 
   const permittedOrders = ["asc", "desc"];

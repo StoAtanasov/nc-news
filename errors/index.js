@@ -15,6 +15,10 @@ if (err.status) {
   } else next(err);
 };
 
+exports.invalidMethods = (req, res, next) =>{
+res.status(405).send({msg : "Method not allowed"})
+}
+
 exports.handle500 = (err,req,res, next) => {
 console.log(err, "<<<<< handle500")
 };

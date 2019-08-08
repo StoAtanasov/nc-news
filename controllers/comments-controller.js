@@ -33,7 +33,6 @@ exports.sendAllCommentsByArticle = (req, res, next) => {
 exports.sendUpdateComment = (req, res, next) => {
   const {comment_id} = req.params;
   const {inc_votes} =  req.body;
-  console.log(inc_votes);
   addCommentVote(comment_id, inc_votes)
   .then(comment => {
     res.status(200).send({comment})
