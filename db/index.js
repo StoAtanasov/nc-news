@@ -3,6 +3,7 @@ const testData = require("./data/test-data");
 const devData = require("./data/development-data");
 
 const data = {
+  production: devData,
   development: devData,
   test: testData
 };
