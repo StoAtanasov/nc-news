@@ -453,11 +453,21 @@ describe("app", () => {
                 expect(body.msg).to.equal("Bad request");
               });
           });
+          it.only("POST / status: 400, returns when an invalid articile id is passed  ", () => {
+            return request(app)
+              .post("/api/articles/1/comments")
+              .send({})
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.msg).to.equal("Bad request");
+              });
+          });
           it("POST / status: 400, returns request does not include all the required keys", () => {
             return request(app)
               .post("/api/articles/not-an-article/comments")
               .send({
                 username: "butter_bridge"
+                
               })
               .expect(400)
               .then(({ body }) => {

@@ -1,7 +1,9 @@
 exports.handlePSQLErrors = (err, req, res, next) => {
+  console.log(err.code)
   const errCodes = {
     "23503": { status: 422, msg: "Unproc­essable Entity" },
-    "22P02": { status: 400, msg: "Bad request" }
+    "22P02": { status: 400, msg: "Bad request" },
+    "23502": { status: 400, msg: "Bad request" }
   };
 
   if (errCodes[err.code]) {
