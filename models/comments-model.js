@@ -46,8 +46,8 @@ exports.selectAllCommentsByArticle = (
     .where("comments.article_id", "=", article_id)
     .then(comments => {
       if (!comments.length) {
-        return Promise.all([comments,selectArticleById(article_id)]);
-      } else return Promise.all([comments,true]);
+        return Promise.all([comments, selectArticleById(article_id)]);
+      } else return Promise.all([comments, true]);
     })
     .then(([comments]) => {
       if (comments) {
@@ -58,21 +58,18 @@ exports.selectAllCommentsByArticle = (
     });
 };
 
-exports.patchCommentVote = (id, inc_votes=0) => {
-  
-  
-    return connection
-      .first("*")
-      .from("comments")
-      .where("comment_id", id)
-      .increment("votes", inc_votes)
-      .returning("*")
-      .then(([comment]) => {
-        if (!comment) {
-          return Promise.reject({ status: 404, msg: "Invalid comment" });
-        } else return comment;
-      });
-  
+exports.patchCommentVote = (id, inc_votes = 0) => {
+  return connection
+    .first("*")
+    .from("comments")
+    .where("comment_id", id)
+    .increment("votes", inc_votes)
+    .returning("*")
+    .then(([comment]) => {
+      if (!comment) {
+        return Promise.reject({ status: 404, msg: "Invalid comment" });
+      } else return comment;
+    });
 };
 
 exports.deleteComment = id => {
