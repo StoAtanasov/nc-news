@@ -12,9 +12,7 @@ exports.sendNewArticleComment = (req, res, next) => {
     .then(comment => {
       res.status(201).send({ comment });
     })
-    .catch(err => {
-      next(err);
-    });
+    .catch(next);
 };
 
 exports.sendAllCommentsByArticle = (req, res, next) => {
