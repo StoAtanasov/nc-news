@@ -77,4 +77,4 @@ exports.patchArticle = (article_id, inc_votes = 0) => {
         return Promise.reject({ status: 404, msg: "Article not found" });
       } else return article;
     });
-};
+  };
