@@ -453,7 +453,7 @@ describe("app", () => {
                 expect(body.msg).to.equal("Bad request");
               });
           });
-          it.only("POST / status: 400, returns Bad request when an empty object  is passed", () => {
+          it("POST / status: 400, returns Bad request when an empty object  is passed", () => {
             return request(app)
               .post("/api/articles/1/comments")
               .send({})
