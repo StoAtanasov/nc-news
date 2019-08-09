@@ -3,7 +3,7 @@ exports.formatDates = list => {
     const newObj = { ...element };
     const formatDate = new Date(element.created_at);
     newObj.created_at = formatDate;
-    return array;
+    return newObj;
   });
 };
 
