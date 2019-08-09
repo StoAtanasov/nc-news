@@ -5,14 +5,12 @@ const {handlePSQLErrors, handleCustomErrors, invalidMethods, handle500} = requir
 app.use(express.json());
 
 app.use("/api", apiRouter);
+app.all("/*", ( req, res, next) => {
+  res.status(404).send({ msg: "Page not found" });
+});
 
 app.use(handlePSQLErrors);
 app.use(handleCustomErrors);
 app.use(handle500);
 
-app.all("/*", ( req, res, next) => {
-  res.status(404).send({ msg: "Page not found" });
-});
-
-app.use(invalidMethods);
 module.exports = app;

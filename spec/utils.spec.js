@@ -85,6 +85,7 @@ describe("formatDates", () => {
         created_at: 1511354163389
       }
     ];
+    formatDates(input);
     expect(input).to.eql([
       {
         body:
@@ -192,10 +193,11 @@ describe("formatComments", () => {
         created_at: 1478813209256
       }
     ];
-
+      formatComments(input, articleRef);
     expect(input).to.deep.equal([
       {
-        body: "Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.",
+        body:
+          "Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.",
         belongs_to: "Making sense of Redux",
         created_by: "grumpy19",
         votes: 7,

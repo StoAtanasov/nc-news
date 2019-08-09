@@ -1,7 +1,7 @@
 const {
   createCommentByArticle,
   selectAllCommentsByArticle,
-  addCommentVote,
+  patchCommentVote,
   deleteComment
 } = require("../models/comments-model");
 
@@ -25,31 +25,24 @@ exports.sendAllCommentsByArticle = (req, res, next) => {
     .then(comments => {
       res.status(200).send({ comments });
     })
-    .catch(err => {
-      next(err);
-    });
+    .catch(next);
 };
 
 exports.sendUpdateComment = (req, res, next) => {
   const {comment_id} = req.params;
   const {inc_votes} =  req.body;
-  addCommentVote(comment_id, inc_votes)
-  .then(comment => {
-    res.status(200).send({comment})
-  })
-  .catch(err => {
-    next(err)
-  });
+  patchCommentVote(comment_id, inc_votes)
+    .then(comment => {
+      res.status(200).send({ comment });
+    })
+    .catch(next);
 };
 
 exports.removeComment = (req, res, next) => {
   const {comment_id} = req.params;
    deleteComment(comment_id)
-    .then(comment =>{
-      res.sendStatus(204);
-    })
-    .catch(err => {
-      next(err)
-    })
-  
+     .then(comment => {
+       res.sendStatus(204);
+     })
+     .catch(next);
 }

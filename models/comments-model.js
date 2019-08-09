@@ -46,21 +46,21 @@ exports.selectAllCommentsByArticle = (
     .where("comments.article_id", "=", article_id)
     .then(comments => {
       if (!comments.length) {
-        return selectArticleById(article_id).then(article => {
-          if (article) {
-            return [];
-          } else {
-            return Promise.reject({ status: 404, msg: "Not found" });
-          }
-        });
-      } else return comments;
+        return Promise.all([comments,selectArticleById(article_id)]);
+      } else return Promise.all([comments,true]);
+    })
+    .then(([comments]) => {
+      if (comments) {
+        return comments;
+      } else {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
     });
 };
 
-exports.addCommentVote = (id, inc_votes) => {
-  if (isNaN(inc_votes)) {
-    return Promise.reject({ status: 400, msg: "Bad request" });
-  } else {
+exports.patchCommentVote = (id, inc_votes=0) => {
+  
+  
     return connection
       .first("*")
       .from("comments")
@@ -69,24 +69,24 @@ exports.addCommentVote = (id, inc_votes) => {
       .returning("*")
       .then(([comment]) => {
         if (!comment) {
-          return Promise.reject({status:404, msg: "Invalid comment"})
+          return Promise.reject({ status: 404, msg: "Invalid comment" });
         } else return comment;
       });
-  }
+  
 };
 
-exports.deleteComment = (id) => {
+exports.deleteComment = id => {
   return connection
     .select("*")
     .from("comments")
     .where("comments.comment_id", "=", id)
     .del()
     .then(deleted => {
-      if (!deleted){
+      if (!deleted) {
         return Promise.reject({
           status: 404,
           msg: "Comment does not exist"
         });
       }
     });
-}
+};

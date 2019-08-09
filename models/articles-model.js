@@ -32,12 +32,10 @@ exports.selectAllArticles = (sort_by = "created_at", order = "desc", author, top
     .groupBy("articles.article_id")
     .orderBy(sort_by, order)
     .modify(function(queryBuilder) {
-      if (author && topic) {
-        queryBuilder.where('articles.author', author)
-        .and('articles.topic', topic);
-      } else if (author) {
+      if (author) {
         queryBuilder.where('articles.author', author);
-      } else if (topic) {
+      }
+      if (topic) {
         queryBuilder.where('articles.topic', topic);
       }
     })
@@ -67,7 +65,7 @@ exports.selectArticleById = article_id => {
     });
 };
 
-exports.selectUpdatedArticle = (article_id, inc_votes = 0) => {
+exports.patchArticle = (article_id, inc_votes = 0) => {
   return connection
     .increment("votes", inc_votes)
     .into("articles.*")

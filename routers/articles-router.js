@@ -9,23 +9,23 @@ const {
   sendNewArticleComment,
   sendAllCommentsByArticle
 } = require("../controllers/comments-controller");
-const { invalidMethods } = require("../errors");
+const { handleInvalidMethods } = require("../errors");
 
 articlesRouter
   .route("/:article_id")
   .get(sendArticleById)
   .patch(updateArticle)
-  .all(invalidMethods);
+  .all(handleInvalidMethods);
 
 articlesRouter
   .route("/:article_id/comments")
   .post(sendNewArticleComment)
   .get(sendAllCommentsByArticle)
-  .all(invalidMethods);
+  .all(handleInvalidMethods);
 
 articlesRouter
   .route("/")
   .get(sendAllArticles)
-  .all(invalidMethods);
+  .all(handleInvalidMethods);
 
 module.exports = articlesRouter;

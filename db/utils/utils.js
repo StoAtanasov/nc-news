@@ -1,7 +1,7 @@
 exports.formatDates = list => {
-  return list.map(arrayOfComments => {
-    const commentArr = { ...arrayOfComments };
-    const formatDate = new Date(arrayOfComments.created_at);
+  return list.map(element => {
+    const commentArr = { ...element };
+    const formatDate = new Date(element.created_at);
     commentArr.created_at = formatDate;
     return commentArr;
   });
