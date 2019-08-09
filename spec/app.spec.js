@@ -121,7 +121,7 @@ describe("app", () => {
       });
     });
 
-    describe("/articles", () => {
+    describe.only("/articles", () => {
       it("GET / status: 200, returns all articles", () => {
         return request(app)
           .get("/api/articles")
@@ -269,7 +269,7 @@ describe("app", () => {
           .get("/api/articles?author=invalid")
           .expect(404)
           .then(({ body }) => {
-            expect(body.msg).to.equal("Author not found");
+            expect(body.msg).to.equal("Page not found");
           });
       });
       it("GET / status: 404, returns an error if  invalid topic", () => {
@@ -277,7 +277,7 @@ describe("app", () => {
           .get("/api/articles?topic=invalid")
           .expect(404)
           .then(({ body }) => {
-            expect(body.msg).to.equal("Topic not found");
+            expect(body.msg).to.equal("Page not found");
           });
       });
       it("Method not allowed: status 405 for /articles", () => {

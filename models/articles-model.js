@@ -40,7 +40,7 @@ exports.selectAllArticles = (sort_by = "created_at", order = "desc", author, top
       }
     })
     .then(article => {
-      if (!article) {
+      if (!article || !article.length) {
         return Promise.reject({
           status: 404,
           msg: "Page not found"
