@@ -467,7 +467,6 @@ describe("app", () => {
               .post("/api/articles/not-an-article/comments")
               .send({
                 username: "butter_bridge"
-                
               })
               .expect(400)
               .then(({ body }) => {
@@ -710,6 +709,14 @@ describe("app", () => {
               expect(body.msg).to.equal("Comment does not exist");
             });
         });
+        it("DELETE / status: 400, when deleting invalid comment id", () => {
+          return request(app)
+            .delete("/api/comments/not-an-id")
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Bad request");
+            });
+        });
         it("Method not allowed: status 405 for /comments/comments_id", () => {
           const invalidMethods = ["get", "put", "post"];
           const methodPromises = invalidMethods.map(method => {
@@ -722,14 +729,6 @@ describe("app", () => {
           });
           return Promise.all(methodPromises);
         });
-      });
-      it("DELETE / status: 400, when deleting invalid comment id", () => {
-        return request(app)
-          .delete("/api/comments/not-an-id")
-          .expect(400)
-          .then(({ body }) => {
-            expect(body.msg).to.equal("Bad request");
-          });
       });
     });
   });
